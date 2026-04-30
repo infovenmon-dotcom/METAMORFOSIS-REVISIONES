@@ -457,9 +457,20 @@ document.getElementById("form").addEventListener("submit", async e => {
     }
     if(statusEl) statusEl.textContent = '';
 
-    // Enviar como GET con query params — máxima compatibilidad con Zapier
-    await fetch(WEBHOOK + '?' + params.toString(), {
-      method: "GET",
+    // Construir objeto de datos para enviar como JSON
+    const jsonData = {};
+    for (const [key, value] of params.entries()) {
+      jsonData[key] = value;
+    }
+    
+    // Enviar como POST con JSON — formato correcto para Zapier
+    await fetch(WEBHOOK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(jsonData),
       mode: "no-cors"
     });
     document.getElementById("form").style.display = "none";
